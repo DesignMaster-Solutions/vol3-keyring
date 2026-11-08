@@ -4,6 +4,7 @@ import json
 import os
 import re
 import subprocess
+import sys
 
 import pytest
 
@@ -45,6 +46,12 @@ def test_every_line_of_proc_keys_matches(keys):
     assert len(views) > 100
     for serial, want in sorted(views.items()):
         assert got.get(serial) == want, serial
+
+
+def test_tools_proc_keys_prints_the_same_text(keys):
+    out = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "proc_keys.py")], input=json.dumps(keys),
+                         capture_output=True, text=True, check=True).stdout.splitlines()
+    assert set(proc_keys_views().values()) <= set(out) and len(out) == len(keys)
 
 
 def test_no_key_is_missing_or_extra(keys):

@@ -1,8 +1,9 @@
-# Memory sample
+# Memory samples
 
-One dump of a benign guest on Debian 12 `6.1.0-54-cloud-amd64` (6.1.190-1). The dump is a release asset; its
-uncompressed sha256 is in `expected/keyring-6.1.0-54-cloud-amd64.elf.sha256` and the ground truth the tests compare
-against is `expected/serial-6.1.0-54-cloud-amd64.log` (the `TRUTH` lines).
+Two dumps of the same benign guest: Debian 12 `6.1.0-54-cloud-amd64` (6.1.190-1) and Debian 13
+`6.12.115+deb13.1-cloud-amd64`. The dumps are release assets; their uncompressed sha256 are in
+`expected/keyring-<kernel>.elf.sha256` and the ground truth the tests compare against is
+`expected/serial-<kernel>.log` (the `TRUTH` lines).
 
 ## What the guest runs
 
@@ -30,7 +31,8 @@ Requirements: Docker with linux/amd64 emulation. QEMU runs in TCG mode (no KVM);
 kernel is built with `X86_5LEVEL=y` and Volatility needs 4-level paging in the dump.
 
 ```
-./build_sample.sh        # writes work/: keyring-<KVER>.elf, serial-<KVER>.log, isf/linux/<KVER>.json.xz
+./build_sample.sh        # 6.1, writes work/: keyring-<KVER>.elf, serial-<KVER>.log, isf/linux/<KVER>.json.xz
+WORK=$PWD/work-6.12 SUITE=trixie KVER=6.12.115+deb13.1-cloud-amd64 ./build_sample.sh
 ```
 
 Key serials, process IDs and the dump hash change on every rebuild; the tests read them from the serial log.

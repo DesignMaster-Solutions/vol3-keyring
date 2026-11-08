@@ -1,0 +1,400 @@
+GUEST_BOOTED 6.12.115+deb13.1-cloud-amd64
+keyctl from keyutils-1.6.3 (Built 2024-04-20)
+TRUTH gc_delay 86400
+TRUTH proc empty pid=137 tid=137 uid=0
+TRUTH key alice serial=1267ab1a where=session desc=keyring;1000;1000;3f130000;alice-session
+TRUTH key alice serial=0a17da30 where=@s desc=user;1000;1000;3f010000;alice:token
+TRUTH read alice serial=0a17da30 len=16 hex=616c6963652d746f6b656e2d30303031
+TRUTH key alice serial=15d9d985 where=@s desc=logon;1000;1000;3d010000;cryptsetup:alice-vol
+TRUTH read alice serial=15d9d985 error=Not supported
+TRUTH written alice serial=15d9d985 len=32 hex=4c554b532d44454d4f2d564f4c554d452d4b45592d3031323334353637383961
+TRUTH key alice serial=2ef47966 where=@s desc=keyring;1000;1000;3f010000;alice-ring1
+TRUTH key alice serial=289c33a0 where=alice-ring1 desc=keyring;1000;1000;3f010000;alice-ring2
+TRUTH key alice serial=1e9aadab where=alice-ring2 desc=user;1000;1000;3f010000;alice:deep
+TRUTH read alice serial=1e9aadab len=15 hex=74776f2d6c6576656c732d646f776e
+TRUTH key alice serial=3f117a9d where=@p desc=user;1000;1000;3f010000;alice:proc-secret
+TRUTH key alice serial=3bb6a659 where=@t desc=user;1000;1000;3f010000;alice:thread-note
+TRUTH key alice serial=19580ade where=@u desc=user;1000;1000;3f010000;alice:uid-key
+TRUTH proc alice pid=139 tid=139 uid=1000 thread=04d2c45b process=295f884f session=1267ab1a user=0074d5b5 user_session=37668c58
+TRUTH key alice serial=0b59b770 where=@t desc=user;1000;1000;3f010000;alice:worker-thread
+TRUTH proc alice pid=139 tid=141 uid=1000 thread=2f0b36d2 process=295f884f session=1267ab1a user=0074d5b5 user_session=37668c58
+TRUTH members alice serial=1267ab1a n=3 0a17da30 2ef47966 15d9d985
+TRUTH members alice serial=2ef47966 n=1 289c33a0
+TRUTH members alice serial=289c33a0 n=1 1e9aadab
+TRUTH members alice serial=0074d5b5 n=1 19580ade
+TRUTH key bob serial=06f7cf30 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-00
+TRUTH key bob serial=2603725a where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-01
+TRUTH key bob serial=066584da where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-02
+TRUTH key bob serial=1b52ec9c where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-03
+TRUTH key bob serial=255c91ee where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-04
+TRUTH key bob serial=243006fe where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-05
+TRUTH key bob serial=33696411 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-06
+TRUTH key bob serial=07d549af where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-07
+TRUTH key bob serial=35c1cfdc where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-08
+TRUTH key bob serial=2608d852 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-09
+TRUTH key bob serial=2ce4d5fc where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-10
+TRUTH key bob serial=2e097e20 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-11
+TRUTH key bob serial=105eb152 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-12
+TRUTH key bob serial=2026ef6a where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-13
+TRUTH key bob serial=15160189 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-14
+TRUTH key bob serial=1a762286 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-15
+TRUTH key bob serial=10f322e9 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-16
+TRUTH key bob serial=1499c9af where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-17
+TRUTH key bob serial=1f4dae76 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-18
+TRUTH key bob serial=221c7e65 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-19
+TRUTH key bob serial=20b2bbd5 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-20
+TRUTH key bob serial=30bfbc99 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-21
+TRUTH key bob serial=1f0ce242 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-22
+TRUTH key bob serial=279d6780 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-23
+TRUTH key bob serial=0215f7ea where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-24
+TRUTH key bob serial=3e375c20 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-25
+TRUTH key bob serial=09d87d1f where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-26
+TRUTH key bob serial=12589629 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-27
+TRUTH key bob serial=121c2a1f where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-28
+TRUTH key bob serial=2e0d3704 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-29
+TRUTH key bob serial=3537978a where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-30
+TRUTH key bob serial=35727bc9 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-31
+TRUTH key bob serial=3fa91265 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-32
+TRUTH key bob serial=28fe3ced where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-33
+TRUTH key bob serial=37dee3f7 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-34
+TRUTH key bob serial=06401158 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-35
+TRUTH key bob serial=1c4603e7 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-36
+TRUTH key bob serial=160248e9 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-37
+TRUTH key bob serial=1df92b19 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-38
+TRUTH key bob serial=166a3c53 where=bob-many-keys desc=user;1001;1001;3f010000;bob:many-39
+TRUTH key bob serial=0210a47b where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-00
+TRUTH key bob serial=09c8904b where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-01
+TRUTH key bob serial=01a01c70 where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-02
+TRUTH key bob serial=15b33991 where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-03
+TRUTH key bob serial=3c2af838 where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-04
+TRUTH key bob serial=2bc8055d where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-05
+TRUTH key bob serial=3a63b23f where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-06
+TRUTH key bob serial=13e8fda6 where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-07
+TRUTH key bob serial=1a41da76 where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-08
+TRUTH key bob serial=3deaae0b where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-09
+TRUTH key bob serial=241af735 where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-10
+TRUTH key bob serial=25546f4d where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-11
+TRUTH key bob serial=2a7d5356 where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-12
+TRUTH key bob serial=0319bd41 where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-13
+TRUTH key bob serial=1475c304 where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-14
+TRUTH key bob serial=11ff34c6 where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-15
+TRUTH key bob serial=3d4d05c3 where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-16
+TRUTH key bob serial=0fd4ecec where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-17
+TRUTH key bob serial=01b643b0 where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-18
+TRUTH key bob serial=2b360041 where=bob-many-rings desc=keyring;1001;1001;3f010000;bob-sub-19
+TRUTH key bob serial=3b860b9e where=session desc=keyring;1001;1001;3f130000;bob-session
+TRUTH key bob serial=2aacfab5 where=process desc=keyring;1001;1001;3f010000;_pid
+TRUTH key bob serial=11823f9a where=@s+@p desc=user;1001;1001;3f010000;shared:config
+TRUTH read bob serial=11823f9a len=21 hex=6d6f64653d64656d6f3b696e74657276616c3d3630
+TRUTH key bob serial=1ae8c232 where=@s desc=Key has been revoked
+TRUTH read bob serial=1ae8c232 error=Key has been revoked
+TRUTH key bob serial=10c8202a where=@s desc=user;1001;1001;3f010000;bob:3days
+TRUTH key bob serial=3101419c where=@s desc=keyring;1001;1001;3f010000;bob-many-keys
+TRUTH key bob serial=37737234 where=@s desc=keyring;1001;1001;3f010000;bob-many-rings
+TRUTH key bob serial=36a8cfa8 where=@s desc=Key has expired
+TRUTH read bob serial=36a8cfa8 error=Key has expired
+TRUTH proc bob pid=142 tid=142 uid=1001 thread=none process=2aacfab5 session=3b860b9e user=28af85d5 user_session=06240471
+TRUTH members bob serial=3b860b9e n=6 11823f9a 37737234 3101419c 10c8202a 36a8cfa8 1ae8c232
+TRUTH members bob serial=2aacfab5 n=1 11823f9a
+TRUTH members bob serial=3101419c n=40 06f7cf30 2e097e20 066584da 12589629 06401158 160248e9 1df92b19 30bfbc99 221c7e65 279d6780 3e375c20 35c1cfdc 1c4603e7 2026ef6a 3fa91265 2e0d3704 1f0ce242 121c2a1f 15160189 2ce4d5fc 33696411 255c91ee 28fe3ced 09d87d1f 1b52ec9c 10f322e9 1499c9af 1f4dae76 1a762286 105eb152 2603725a 3537978a 20b2bbd5 2608d852 07d549af 37dee3f7 35727bc9 243006fe 0215f7ea 166a3c53
+TRUTH members bob serial=37737234 n=20 1475c304 25546f4d 241af735 3deaae0b 1a41da76 13e8fda6 3c2af838 01a01c70 3d4d05c3 0fd4ecec 01b643b0 2b360041 0210a47b 11ff34c6 2bc8055d 0319bd41 3a63b23f 2a7d5356 15b33991 09c8904b
+TRUTH key orphan serial=1d49fb58 where=session(unlinked from @u) desc=keyring;0;0;3f3f0000;detached-ring
+TRUTH key orphan serial=3727783a where=detached-ring desc=user;0;0;3f010000;orphan:held
+TRUTH read orphan serial=3727783a len=27 hex=6f6e6c792d726561636861626c652d7468726f7567682d63726564
+TRUTH proc orphan pid=144 tid=144 uid=0 thread=none process=none session=1d49fb58 user=38a260d4 user_session=1c4fd237
+TRUTH members orphan serial=1d49fb58 n=1 3727783a
+TRUTH members orphan serial=38a260d4 n=0
+TRUTH helper pid=148 op=create key=29a63e2b auth=10012973 callout=callout-deny
+TRUTH helper rejected key=29a63e2b timeout=3600
+TRUTH request carol desc=carol:denied rc=-1 error=Key was rejected by service
+TRUTH helper pid=150 op=create key=0e007be0 auth=3abf5a09 callout=callout-pending
+TRUTH proc helper-pending pid=150 tid=150 uid=0 thread=none process=none session=3ec56405 user=38a260d4 user_session=1c4fd237
+TRUTH key carol serial=0f1601f5 where=session desc=keyring;0;0;3f130000;carol-session
+TRUTH proc carol pid=146 tid=146 uid=0 thread=none process=none session=0f1601f5 user=38a260d4 user_session=1c4fd237
+TRUTH members carol serial=0f1601f5 n=2 29a63e2b 0e007be0
+PID   PPID  USER     COMMAND          COMMAND
+    1     0 root     init             {init} /bin/sh /init
+    2     0 root     kthreadd         [kthreadd]
+    3     2 root     pool_workqueue_  [pool_workqueue_]
+    4     2 root     kworker/R-kvfre  [kworker/R-kvfre]
+    5     2 root     kworker/R-rcu_g  [kworker/R-rcu_g]
+    6     2 root     kworker/R-sync_  [kworker/R-sync_]
+    7     2 root     kworker/R-slub_  [kworker/R-slub_]
+    8     2 root     kworker/R-netns  [kworker/R-netns]
+    9     2 root     kworker/0:0-eve  [kworker/0:0-eve]
+   10     2 root     kworker/0:1-pm   [kworker/0:1-pm]
+   11     2 root     kworker/0:0H-ev  [kworker/0:0H-ev]
+   12     2 root     kworker/u4:0-ev  [kworker/u4:0-ev]
+   13     2 root     kworker/R-mm_pe  [kworker/R-mm_pe]
+   14     2 root     rcu_tasks_kthre  [rcu_tasks_kthre]
+   15     2 root     rcu_tasks_rude_  [rcu_tasks_rude_]
+   16     2 root     rcu_tasks_trace  [rcu_tasks_trace]
+   17     2 root     ksoftirqd/0      [ksoftirqd/0]
+   18     2 root     rcu_preempt      [rcu_preempt]
+   19     2 root     rcu_exp_par_gp_  [rcu_exp_par_gp_]
+   20     2 root     rcu_exp_gp_kthr  [rcu_exp_gp_kthr]
+   21     2 root     migration/0      [migration/0]
+   22     2 root     idle_inject/0    [idle_inject/0]
+   23     2 root     cpuhp/0          [cpuhp/0]
+   25     2 root     kdevtmpfs        [kdevtmpfs]
+   26     2 root     kworker/R-inet_  [kworker/R-inet_]
+   27     2 root     kauditd          [kauditd]
+   28     2 root     khungtaskd       [khungtaskd]
+   29     2 root     kworker/u4:1+ev  [kworker/u4:1+ev]
+   30     2 root     oom_reaper       [oom_reaper]
+   31     2 root     kworker/u4:2-ev  [kworker/u4:2-ev]
+   32     2 root     kworker/R-write  [kworker/R-write]
+   33     2 root     kcompactd0       [kcompactd0]
+   34     2 root     ksmd             [ksmd]
+   35     2 root     kworker/R-kinte  [kworker/R-kinte]
+   36     2 root     kworker/R-kbloc  [kworker/R-kbloc]
+   37     2 root     kworker/R-blkcg  [kworker/R-blkcg]
+   38     2 root     irq/9-acpi       [irq/9-acpi]
+   39     2 root     kworker/R-tpm_d  [kworker/R-tpm_d]
+   40     2 root     kworker/R-quota  [kworker/R-quota]
+   41     2 root     kworker/0:1H     [kworker/0:1H]
+   42     2 root     kswapd0          [kswapd0]
+   49     2 root     kworker/R-kthro  [kworker/R-kthro]
+   53     2 root     kworker/R-acpi_  [kworker/R-acpi_]
+   54     2 root     kworker/R-nvme-  [kworker/R-nvme-]
+   55     2 root     kworker/R-nvme-  [kworker/R-nvme-]
+   56     2 root     kworker/R-nvme-  [kworker/R-nvme-]
+   57     2 root     kworker/R-nvme-  [kworker/R-nvme-]
+   58     2 root     kworker/R-mld    [kworker/R-mld]
+   59     2 root     kworker/R-ipv6_  [kworker/R-ipv6_]
+   64     2 root     kworker/R-kstrp  [kworker/R-kstrp]
+   66     2 root     kworker/u5:0     [kworker/u5:0]
+   97     2 root     kworker/u4:3-ev  [kworker/u4:3-ev]
+  137     1 root     kr-empty         /usr/local/bin/kr-empty empty
+  139     1 1000     kr-alice         /usr/local/bin/kr-alice alice
+  142     1 1001     kr-bob           /usr/local/bin/kr-bob bob
+  144     1 root     kr-orphan        /usr/local/bin/kr-orphan orphan
+  146     1 root     kr-carol         /usr/local/bin/kr-carol carol
+  150    29 root     request-key      /sbin/request-key create 234912736 0 0 0 
+  151     1 root     ps               ps -o pid,ppid,user,comm,args
+TRUTH signal pid=137 comm=kr-empty
+TRUTH view empty 06e1bafe I------     1 perm 1f0f0000     0     0 keyring   .secondary_trusted_keys: 2
+TRUTH view empty 0a45d5a6 I--Q---     1 perm 0c030000     0 65534 keyring   .user_reg: 6
+TRUTH view empty 0a7ec76c I------     2 perm 000d0000     0     0 user      opal-boot-pin: 255
+TRUTH view empty 0e007be0 ---QU--     3 perm 3f010000     0     0 user      carol:pending
+TRUTH view empty 0f1601f5 I--Q---     4 perm 3f130000     0     0 keyring   carol-session: 2
+TRUTH view empty 1b971183 I------     2 perm 1f0b0000     0     0 keyring   .machine: empty
+TRUTH view empty 1c4fd237 I--Q---     2 perm 1f3f0000     0 65534 keyring   _uid_ses.0: 1
+TRUTH view empty 1d49fb58 I--Q---     1 perm 3f3f0000     0     0 keyring   detached-ring: 1
+TRUTH view empty 206b7eb8 I------     2 perm 1f0b0000     0     0 keyring   .builtin_trusted_keys: 1
+TRUTH view empty 2147c98c I------     1 perm 0f0b0000     0     0 keyring   .blacklist: empty
+TRUTH view empty 2479dfa3 I------     1 perm 082f0000     0     0 keyring   .fs-verity: empty
+TRUTH view empty 25308b66 I------     1 perm 1f0b0000     0     0 keyring   .platform: empty
+TRUTH view empty 27a9de0e I------     1 perm 1f0f0000     0     0 keyring   .sed_opal: 1
+TRUTH view empty 28f0c396 I------     1 perm 1f1f0000     0     0 keyring   .nvme: empty
+TRUTH view empty 28f657f7 I------     1 perm 1f030000     0     0 asymmetri Build time autogenerated kernel key: e2eaebfa7cdb5b066ffab06dca89e152c5ceaf04: X509.ecdsa-nist-p384 c5ceaf04 []
+TRUTH view empty 29a63e2b I--Q-N-     1  59m 3f010000     0     0 user      carol:denied
+TRUTH view empty 3727783a I--Q---     1 perm 3f010000     0     0 user      orphan:held: 27
+TRUTH view empty 38a260d4 I--Q---     2 perm 1f3f0000     0 65534 keyring   _uid.0: empty
+TRUTH view empty 3abf5a09 I------     3 perm 1b010000     0     0 .request_ key:e007be0 pid:149 ci:15
+TRUTH view empty 3ec56405 I--Q---     5 perm 3f030000     0     0 keyring   _req.234912736: 1
+TRUTH viewend empty pid=137
+TRUTH signal pid=139 comm=kr-alice
+TRUTH view alice 0074d5b5 I--Q---     2 perm 1f3f0000  1000 65534 keyring   _uid.1000: 1
+TRUTH view alice 04d2c45b I--Q---     1 perm 3f010000  1000  1000 keyring   _tid: 1
+TRUTH view alice 0a17da30 I--Q---     1 perm 3f010000  1000  1000 user      alice:token: 16
+TRUTH view alice 0b59b770 I--Q---     1 perm 3f010000  1000  1000 user      alice:worker-thread: 18
+TRUTH view alice 1267ab1a I--Q---     2 perm 3f130000  1000  1000 keyring   alice-session: 3
+TRUTH view alice 15d9d985 I--Q---     1 perm 3d010000  1000  1000 logon     cryptsetup:alice-vol: 32
+TRUTH view alice 19580ade I--Q---     1 perm 3f010000  1000  1000 user      alice:uid-key: 15
+TRUTH view alice 1e9aadab I--Q---     1 perm 3f010000  1000  1000 user      alice:deep: 15
+TRUTH view alice 289c33a0 I--Q---     1 perm 3f010000  1000  1000 keyring   alice-ring2: 1
+TRUTH view alice 295f884f I--Q---     2 perm 3f010000  1000  1000 keyring   _pid: 1
+TRUTH view alice 2ef47966 I--Q---     1 perm 3f010000  1000  1000 keyring   alice-ring1: 1
+TRUTH view alice 2f0b36d2 I--Q---     1 perm 3f010000  1000  1000 keyring   _tid: 1
+TRUTH view alice 37668c58 I--Q---     1 perm 1f3f0000  1000 65534 keyring   _uid_ses.1000: 1
+TRUTH view alice 3bb6a659 I--Q---     1 perm 3f010000  1000  1000 user      alice:thread-note: 11
+TRUTH view alice 3f117a9d I--Q---     1 perm 3f010000  1000  1000 user      alice:proc-secret: 19
+TRUTH viewend alice pid=139
+TRUTH signal pid=142 comm=kr-bob
+TRUTH view bob 01a01c70 I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-02: empty
+TRUTH view bob 01b643b0 I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-18: empty
+TRUTH view bob 0210a47b I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-00: empty
+TRUTH view bob 0215f7ea I--Q---     1 perm 3f010000  1001  1001 user      bob:many-24: 8
+TRUTH view bob 0319bd41 I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-13: empty
+TRUTH view bob 06240471 I--Q---     1 perm 1f3f0000  1001 65534 keyring   _uid_ses.1001: 1
+TRUTH view bob 06401158 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-35: 8
+TRUTH view bob 066584da I--Q---     1 perm 3f010000  1001  1001 user      bob:many-02: 8
+TRUTH view bob 06f7cf30 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-00: 8
+TRUTH view bob 07d549af I--Q---     1 perm 3f010000  1001  1001 user      bob:many-07: 8
+TRUTH view bob 09c8904b I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-01: empty
+TRUTH view bob 09d87d1f I--Q---     1 perm 3f010000  1001  1001 user      bob:many-26: 8
+TRUTH view bob 0fd4ecec I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-17: empty
+TRUTH view bob 105eb152 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-12: 8
+TRUTH view bob 10c8202a I--Q---     1   2d 3f010000  1001  1001 user      bob:3days: 10
+TRUTH view bob 10f322e9 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-16: 8
+TRUTH view bob 11823f9a I--Q---     2 perm 3f010000  1001  1001 user      shared:config: 21
+TRUTH view bob 11ff34c6 I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-15: empty
+TRUTH view bob 121c2a1f I--Q---     1 perm 3f010000  1001  1001 user      bob:many-28: 8
+TRUTH view bob 12589629 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-27: 8
+TRUTH view bob 13e8fda6 I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-07: empty
+TRUTH view bob 1475c304 I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-14: empty
+TRUTH view bob 1499c9af I--Q---     1 perm 3f010000  1001  1001 user      bob:many-17: 8
+TRUTH view bob 15160189 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-14: 8
+TRUTH view bob 15b33991 I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-03: empty
+TRUTH view bob 160248e9 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-37: 8
+TRUTH view bob 166a3c53 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-39: 8
+TRUTH view bob 1a41da76 I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-08: empty
+TRUTH view bob 1a762286 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-15: 8
+TRUTH view bob 1ae8c232 IR-Q---     1 expd 3f010000  1001  1001 user      bob:revoked: 0
+TRUTH view bob 1b52ec9c I--Q---     1 perm 3f010000  1001  1001 user      bob:many-03: 8
+TRUTH view bob 1c4603e7 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-36: 8
+TRUTH view bob 1df92b19 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-38: 8
+TRUTH view bob 1f0ce242 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-22: 8
+TRUTH view bob 1f4dae76 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-18: 8
+TRUTH view bob 2026ef6a I--Q---     1 perm 3f010000  1001  1001 user      bob:many-13: 8
+TRUTH view bob 20b2bbd5 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-20: 8
+TRUTH view bob 221c7e65 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-19: 8
+TRUTH view bob 241af735 I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-10: empty
+TRUTH view bob 243006fe I--Q---     1 perm 3f010000  1001  1001 user      bob:many-05: 8
+TRUTH view bob 25546f4d I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-11: empty
+TRUTH view bob 255c91ee I--Q---     1 perm 3f010000  1001  1001 user      bob:many-04: 8
+TRUTH view bob 2603725a I--Q---     1 perm 3f010000  1001  1001 user      bob:many-01: 8
+TRUTH view bob 2608d852 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-09: 8
+TRUTH view bob 279d6780 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-23: 8
+TRUTH view bob 28af85d5 I--Q---     2 perm 1f3f0000  1001 65534 keyring   _uid.1001: empty
+TRUTH view bob 28fe3ced I--Q---     1 perm 3f010000  1001  1001 user      bob:many-33: 8
+TRUTH view bob 2a7d5356 I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-12: empty
+TRUTH view bob 2aacfab5 I--Q---     1 perm 3f010000  1001  1001 keyring   _pid: 1
+TRUTH view bob 2b360041 I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-19: empty
+TRUTH view bob 2bc8055d I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-05: empty
+TRUTH view bob 2ce4d5fc I--Q---     1 perm 3f010000  1001  1001 user      bob:many-10: 8
+TRUTH view bob 2e097e20 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-11: 8
+TRUTH view bob 2e0d3704 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-29: 8
+TRUTH view bob 30bfbc99 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-21: 8
+TRUTH view bob 3101419c I--Q---     1 perm 3f010000  1001  1001 keyring   bob-many-keys: 40
+TRUTH view bob 33696411 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-06: 8
+TRUTH view bob 3537978a I--Q---     1 perm 3f010000  1001  1001 user      bob:many-30: 8
+TRUTH view bob 35727bc9 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-31: 8
+TRUTH view bob 35c1cfdc I--Q---     1 perm 3f010000  1001  1001 user      bob:many-08: 8
+TRUTH view bob 36a8cfa8 I--Q---     1 expd 3f010000  1001  1001 user      bob:expired: 13
+TRUTH view bob 37737234 I--Q---     1 perm 3f010000  1001  1001 keyring   bob-many-rings: 20
+TRUTH view bob 37dee3f7 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-34: 8
+TRUTH view bob 3a63b23f I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-06: empty
+TRUTH view bob 3b860b9e I--Q---     1 perm 3f130000  1001  1001 keyring   bob-session: 6
+TRUTH view bob 3c2af838 I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-04: empty
+TRUTH view bob 3d4d05c3 I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-16: empty
+TRUTH view bob 3deaae0b I--Q---     1 perm 3f010000  1001  1001 keyring   bob-sub-09: empty
+TRUTH view bob 3e375c20 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-25: 8
+TRUTH view bob 3fa91265 I--Q---     1 perm 3f010000  1001  1001 user      bob:many-32: 8
+TRUTH viewend bob pid=142
+TRUTH signal pid=144 comm=kr-orphan
+TRUTH view orphan 06e1bafe I------     1 perm 1f0f0000     0     0 keyring   .secondary_trusted_keys: 2
+TRUTH view orphan 0a45d5a6 I--Q---     1 perm 0c030000     0 65534 keyring   .user_reg: 6
+TRUTH view orphan 0a7ec76c I------     2 perm 000d0000     0     0 user      opal-boot-pin: 255
+TRUTH view orphan 0e007be0 ---QU--     3 perm 3f010000     0     0 user      carol:pending
+TRUTH view orphan 0f1601f5 I--Q---     4 perm 3f130000     0     0 keyring   carol-session: 2
+TRUTH view orphan 1b971183 I------     2 perm 1f0b0000     0     0 keyring   .machine: empty
+TRUTH view orphan 1c4fd237 I--Q---     2 perm 1f3f0000     0 65534 keyring   _uid_ses.0: 1
+TRUTH view orphan 1d49fb58 I--Q---     1 perm 3f3f0000     0     0 keyring   detached-ring: 1
+TRUTH view orphan 206b7eb8 I------     2 perm 1f0b0000     0     0 keyring   .builtin_trusted_keys: 1
+TRUTH view orphan 2147c98c I------     1 perm 0f0b0000     0     0 keyring   .blacklist: empty
+TRUTH view orphan 2479dfa3 I------     1 perm 082f0000     0     0 keyring   .fs-verity: empty
+TRUTH view orphan 25308b66 I------     1 perm 1f0b0000     0     0 keyring   .platform: empty
+TRUTH view orphan 27a9de0e I------     1 perm 1f0f0000     0     0 keyring   .sed_opal: 1
+TRUTH view orphan 28f0c396 I------     1 perm 1f1f0000     0     0 keyring   .nvme: empty
+TRUTH view orphan 28f657f7 I------     1 perm 1f030000     0     0 asymmetri Build time autogenerated kernel key: e2eaebfa7cdb5b066ffab06dca89e152c5ceaf04: X509.ecdsa-nist-p384 c5ceaf04 []
+TRUTH view orphan 29a63e2b I--Q-N-     1  59m 3f010000     0     0 user      carol:denied
+TRUTH view orphan 3727783a I--Q---     1 perm 3f010000     0     0 user      orphan:held: 27
+TRUTH view orphan 38a260d4 I--Q---     2 perm 1f3f0000     0 65534 keyring   _uid.0: empty
+TRUTH view orphan 3abf5a09 I------     3 perm 1b010000     0     0 .request_ key:e007be0 pid:149 ci:15
+TRUTH view orphan 3ec56405 I--Q---     5 perm 3f030000     0     0 keyring   _req.234912736: 1
+TRUTH viewend orphan pid=144
+TRUTH signal pid=146 comm=kr-carol
+TRUTH view carol 06e1bafe I------     1 perm 1f0f0000     0     0 keyring   .secondary_trusted_keys: 2
+TRUTH view carol 0a45d5a6 I--Q---     1 perm 0c030000     0 65534 keyring   .user_reg: 6
+TRUTH view carol 0a7ec76c I------     2 perm 000d0000     0     0 user      opal-boot-pin: 255
+TRUTH view carol 0e007be0 ---QU--     3 perm 3f010000     0     0 user      carol:pending
+TRUTH view carol 0f1601f5 I--Q---     4 perm 3f130000     0     0 keyring   carol-session: 2
+TRUTH view carol 1b971183 I------     2 perm 1f0b0000     0     0 keyring   .machine: empty
+TRUTH view carol 1c4fd237 I--Q---     2 perm 1f3f0000     0 65534 keyring   _uid_ses.0: 1
+TRUTH view carol 1d49fb58 I--Q---     1 perm 3f3f0000     0     0 keyring   detached-ring: 1
+TRUTH view carol 206b7eb8 I------     2 perm 1f0b0000     0     0 keyring   .builtin_trusted_keys: 1
+TRUTH view carol 2147c98c I------     1 perm 0f0b0000     0     0 keyring   .blacklist: empty
+TRUTH view carol 2479dfa3 I------     1 perm 082f0000     0     0 keyring   .fs-verity: empty
+TRUTH view carol 25308b66 I------     1 perm 1f0b0000     0     0 keyring   .platform: empty
+TRUTH view carol 27a9de0e I------     1 perm 1f0f0000     0     0 keyring   .sed_opal: 1
+TRUTH view carol 28f0c396 I------     1 perm 1f1f0000     0     0 keyring   .nvme: empty
+TRUTH view carol 28f657f7 I------     1 perm 1f030000     0     0 asymmetri Build time autogenerated kernel key: e2eaebfa7cdb5b066ffab06dca89e152c5ceaf04: X509.ecdsa-nist-p384 c5ceaf04 []
+TRUTH view carol 29a63e2b I--Q-N-     1  59m 3f010000     0     0 user      carol:denied
+TRUTH view carol 3727783a I--Q---     1 perm 3f010000     0     0 user      orphan:held: 27
+TRUTH view carol 38a260d4 I--Q---     2 perm 1f3f0000     0 65534 keyring   _uid.0: empty
+TRUTH view carol 3abf5a09 I------     3 perm 1b010000     0     0 .request_ key:e007be0 pid:149 ci:15
+TRUTH view carol 3ec56405 I--Q---     5 perm 3f030000     0     0 keyring   _req.234912736: 1
+TRUTH viewend carol pid=146
+TRUTH signal pid=150 comm=request-key
+TRUTH view helper-pending 06e1bafe I------     1 perm 1f0f0000     0     0 keyring   .secondary_trusted_keys: 2
+TRUTH view helper-pending 0a45d5a6 I--Q---     1 perm 0c030000     0 65534 keyring   .user_reg: 6
+TRUTH view helper-pending 0a7ec76c I------     2 perm 000d0000     0     0 user      opal-boot-pin: 255
+TRUTH view helper-pending 0e007be0 ---QU--     3 perm 3f010000     0     0 user      carol:pending
+TRUTH view helper-pending 0f1601f5 I--Q---     4 perm 3f130000     0     0 keyring   carol-session: 2
+TRUTH view helper-pending 1b971183 I------     2 perm 1f0b0000     0     0 keyring   .machine: empty
+TRUTH view helper-pending 1c4fd237 I--Q---     2 perm 1f3f0000     0 65534 keyring   _uid_ses.0: 1
+TRUTH view helper-pending 1d49fb58 I--Q---     1 perm 3f3f0000     0     0 keyring   detached-ring: 1
+TRUTH view helper-pending 206b7eb8 I------     2 perm 1f0b0000     0     0 keyring   .builtin_trusted_keys: 1
+TRUTH view helper-pending 2147c98c I------     1 perm 0f0b0000     0     0 keyring   .blacklist: empty
+TRUTH view helper-pending 2479dfa3 I------     1 perm 082f0000     0     0 keyring   .fs-verity: empty
+TRUTH view helper-pending 25308b66 I------     1 perm 1f0b0000     0     0 keyring   .platform: empty
+TRUTH view helper-pending 27a9de0e I------     1 perm 1f0f0000     0     0 keyring   .sed_opal: 1
+TRUTH view helper-pending 28f0c396 I------     1 perm 1f1f0000     0     0 keyring   .nvme: empty
+TRUTH view helper-pending 28f657f7 I------     1 perm 1f030000     0     0 asymmetri Build time autogenerated kernel key: e2eaebfa7cdb5b066ffab06dca89e152c5ceaf04: X509.ecdsa-nist-p384 c5ceaf04 []
+TRUTH view helper-pending 29a63e2b I--Q-N-     1  59m 3f010000     0     0 user      carol:denied
+TRUTH view helper-pending 3727783a I--Q---     1 perm 3f010000     0     0 user      orphan:held: 27
+TRUTH view helper-pending 38a260d4 I--Q---     2 perm 1f3f0000     0 65534 keyring   _uid.0: empty
+TRUTH view helper-pending 3abf5a09 I------     3 perm 1b010000     0     0 .request_ key:e007be0 pid:149 ci:15
+TRUTH view helper-pending 3ec56405 I--Q---     5 perm 3f030000     0     0 keyring   _req.234912736: 1
+TRUTH viewend helper-pending pid=150
+TRUTH view root 06e1bafe I------     1 perm 1f0f0000     0     0 keyring   .secondary_trusted_keys: 2
+TRUTH view root 0a45d5a6 I--Q---     1 perm 0c030000     0 65534 keyring   .user_reg: 6
+TRUTH view root 0a7ec76c I------     2 perm 000d0000     0     0 user      opal-boot-pin: 255
+TRUTH view root 0e007be0 ---QU--     3 perm 3f010000     0     0 user      carol:pending
+TRUTH view root 0f1601f5 I--Q---     4 perm 3f130000     0     0 keyring   carol-session: 2
+TRUTH view root 1b971183 I------     2 perm 1f0b0000     0     0 keyring   .machine: empty
+TRUTH view root 1c4fd237 I--Q---     2 perm 1f3f0000     0 65534 keyring   _uid_ses.0: 1
+TRUTH view root 1d49fb58 I--Q---     1 perm 3f3f0000     0     0 keyring   detached-ring: 1
+TRUTH view root 206b7eb8 I------     2 perm 1f0b0000     0     0 keyring   .builtin_trusted_keys: 1
+TRUTH view root 2147c98c I------     1 perm 0f0b0000     0     0 keyring   .blacklist: empty
+TRUTH view root 2479dfa3 I------     1 perm 082f0000     0     0 keyring   .fs-verity: empty
+TRUTH view root 25308b66 I------     1 perm 1f0b0000     0     0 keyring   .platform: empty
+TRUTH view root 27a9de0e I------     1 perm 1f0f0000     0     0 keyring   .sed_opal: 1
+TRUTH view root 28f0c396 I------     1 perm 1f1f0000     0     0 keyring   .nvme: empty
+TRUTH view root 28f657f7 I------     1 perm 1f030000     0     0 asymmetri Build time autogenerated kernel key: e2eaebfa7cdb5b066ffab06dca89e152c5ceaf04: X509.ecdsa-nist-p384 c5ceaf04 []
+TRUTH view root 29a63e2b I--Q-N-     1  59m 3f010000     0     0 user      carol:denied
+TRUTH view root 3727783a I--Q---     1 perm 3f010000     0     0 user      orphan:held: 27
+TRUTH view root 38a260d4 I--Q---     2 perm 1f3f0000     0 65534 keyring   _uid.0: empty
+TRUTH view root 3abf5a09 I------     3 perm 1b010000     0     0 .request_ key:e007be0 pid:149 ci:15
+TRUTH view root 3ec56405 I--Q---     5 perm 3f030000     0     0 keyring   _req.234912736: 1
+TRUTH viewend root pid=1
+TRUTH rlist root serial=06e1bafe members=543915704 462885251 
+TRUTH rlist root serial=0a45d5a6 members=950165716 103023729 682591701 929467480 7656885 474993207 
+TRUTH rlist root serial=0f1601f5 members=698760747 234912736 
+TRUTH rlist root serial=1b971183 members= 
+TRUTH rlist root serial=1c4fd237 members=950165716 
+TRUTH rlist root serial=1d49fb58 members=925333562 
+TRUTH rlist root serial=206b7eb8 members=687233015 
+TRUTH rlist root serial=2147c98c members= 
+TRUTH rlist root serial=2479dfa3 members= 
+TRUTH rlist root serial=25308b66 members= 
+TRUTH rlist root serial=27a9de0e members=176080748 
+TRUTH rlist root serial=28f0c396 members= 
+TRUTH rlist root serial=38a260d4 members= 
+TRUTH rlist root serial=3ec56405 members=985618953 
+TRUTH trusted .builtin_trusted_keys serial=206b7eb8
+TRUTH show .builtin_trusted_keys Keyring
+TRUTH show .builtin_trusted_keys  543915704 ---lswrv      0     0  keyring: .builtin_trusted_keys
+TRUTH show .builtin_trusted_keys  687233015 ---lswrv      0     0   \_ asymmetric: Build time autogenerated kernel key: e2eaebfa7cdb5b066ffab06dca89e152c5ceaf04
+TRUTH trusted .secondary_trusted_keys serial=06e1bafe
+TRUTH show .secondary_trusted_keys Keyring
+TRUTH show .secondary_trusted_keys  115456766 ---lswrv      0     0  keyring: .secondary_trusted_keys
+TRUTH show .secondary_trusted_keys  543915704 ---lswrv      0     0   \_ keyring: .builtin_trusted_keys
+TRUTH show .secondary_trusted_keys  687233015 ---lswrv      0     0   |   \_ asymmetric: Build time autogenerated kernel key: e2eaebfa7cdb5b066ffab06dca89e152c5ceaf04
+TRUTH show .secondary_trusted_keys  462885251 ---lswrv      0     0   \_ keyring: .machine
+TRUTH trusted .blacklist serial=2147c98c
+TRUTH show .blacklist Keyring
+TRUTH show .blacklist  558352780 ----swrv      0     0  keyring: .blacklist
+GUEST_READY_FOR_DUMP

@@ -1,0 +1,41 @@
+To: contest@volatilityfoundation.org
+Subject: Volatility Plugin Contest 2026 submission: Linux kernel keyring plugins for Volatility 3 (vol3-keyring)
+
+Hello,
+
+I am submitting vol3-keyring to the 2026 Volatility Plugin Contest. This is a separate entry from
+my earlier submissions vol3-io-uring and vol3-cbpf; please evaluate its two plugins below as one
+entry.
+
+The Linux key retention service keeps secrets in kernel memory: Kerberos KEYRING: credential
+caches, dm-crypt and fscrypt keys of type logon (which user space can never read back), NFS, DNS
+and CIFS upcall credentials, and the trusted keyrings that decide which modules load. /proc/keys
+only shows a reader the keys it may view, and Volatility 3 had no plugin for any of it.
+
+- linux.keyring.Keys: every key in key_serial_tree in the /proc/keys columns and text, with the
+  keyrings that link it, the tasks that hold it in their credentials, and --dump of user, logon
+  and asymmetric payloads
+- linux.keyring.ProcKeys: the thread, process, session, request_key authorisation, user and
+  user-session keyrings of every task, with the full tree under each in kernel order
+
+Code: https://github.com/DesignMaster-Solutions/vol3-keyring (tag v1.0.0)
+Memory samples and ISFs (Debian 6.1 and 6.12, with sha256): https://github.com/DesignMaster-Solutions/vol3-keyring/releases/tag/v1.0.0
+How to use: README.md and docs/usage.md (real output on both samples)
+Write-up: docs/writeup.md
+
+The samples are reproducible (sample/build_sample.sh, Docker + QEMU, benign workload with made-up
+payloads that prints its own ground truth). The tests rebuild every /proc/keys line the guest
+printed from the plugin output and compare it as text on both kernels, check keyring membership
+against KEYCTL_READ, and the logon payload against the bytes the guest wrote; mutation testing and
+15 planted defects show the tests fail when the plugin is wrong. Only Volatility 3 is needed
+(tested with 2.28.2).
+
+My Individual Contributor License Agreement is already on file (sent on 2026-11-05 with my
+earlier entries).
+Built with AI coding assistance; I reviewed and tested it.
+Donated under Volatility Foundation, Inc. Individual Contributor Licensing Agreement
+
+Thank you,
+Alan De Bortolo
+Design Master Solutions LLC
+info@designmastersolutions.com
