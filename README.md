@@ -5,7 +5,7 @@ Two Volatility 3 plugins that read the Linux kernel key retention service (`CONF
 
 | Plugin | What it shows |
 |---|---|
-| `linux.keyring.Keys` | Every key the kernel knows about, walked from `key_serial_tree` (not from any keyring, so unlinked and orphaned keys are included): serial, state flags in the `/proc/keys` letters (`I R D Q U N i`), permissions, uid, gid, type, description, payload length, expiry and last use, which keyrings link it, and the type-specific summary (`keyring: 3 keys`, `user: 32`, `asymmetric: X.509 subject`). `--dump` writes readable payloads (`user`, `logon`, `big_key` in-memory part, `asymmetric` certificates) to disk; `logon` keys are readable here and nowhere else, since the kernel refuses to return their payload to user space. |
+| `linux.keyring.Keys` | Every key the kernel knows about, walked from `key_serial_tree` (not from any keyring, so unlinked and orphaned keys are included): serial, state flags in the `/proc/keys` letters (`I R D Q U N i`), permissions, uid, gid, type, description, payload length, expiry, which keyrings link it (`LinkedFrom`), which tasks hold it in their credentials (`HeldBy`), and the type-specific summary exactly as `/proc/keys` prints it (`alice-session: 3`, `cryptsetup:alice-vol: 32`, `...: X509.rsa 0dbe4f6b []`). `--dump` writes readable payloads (`user`, `logon`, the `asymmetric` public key) to disk; `logon` keys are readable here and nowhere else, since the kernel refuses to return their payload to user space. |
 | `linux.keyring.ProcKeys` | The keyrings of each task, read from its credentials: thread, process, session, user and user-session keyrings, `request_key` authorisation keys, and the full tree under each one. Shows which processes can reach which secrets, and which tasks share a session keyring with a process they should not. |
 
 Both plugins output the same columns as `/proc/keys`, so the result can be diffed against what the live system
@@ -30,29 +30,55 @@ showed, and a `--filter` on type or description (for example `_krb5_ccache`, `cr
 ## How it works
 
 - `key_serial_tree` is the red-black tree of every live `struct key` (`key.serial_node`). The plugin walks it in
-  serial order, which is what `/proc/keys` does too.
-- Each key carries `index_key` (type, description, hash), `uid`, `gid`, `perm`, `flags`, `expiry`, `last_used_at`,
-  `datalen`, `state` and a `payload` union whose meaning depends on `type->name`.
-- Keyrings store their links in an `assoc_array` (a 16-way trie with shortcut nodes); the plugin walks it to list
-  members and to build the reverse map "which keyrings link this key".
-- Per-task view: `task_struct.cred` -> `thread_keyring`, `process_keyring`, `session_keyring`, `request_key_auth`,
-  and `cred.user` -> `uid_keyring`, `session_keyring`.
-- Payload readers: `user`/`logon` (`user_key_payload.data`), `big_key` (in-memory part; the tmpfs-backed part is
-  named with its `struct path`), `asymmetric` (DER certificate when the `asymmetric_key_ids`/public key blob is in
-  memory), `keyring` (member count). Unknown types fall back to `datalen` and a hex preview.
+  serial order, which is what `/proc/keys` does too, so keys linked from no keyring are listed as well.
+- Each key carries `index_key` (type, description), `uid`, `gid`, `perm`, `flags`, `expiry`, `datalen`, `state`
+  and a `payload` union. The format of the last column is chosen by the symbol of the type's `describe()` function
+  (`keyring_describe`, `user_describe`, `asymmetric_key_describe`, `request_key_auth_describe`,
+  `blacklist_describe`), so types built on `user_describe` (logon, encrypted, dns_resolver, cifs) need no special
+  case. A `describe()` the plugin does not know prints the description and the function name.
+- The timeout column uses the wall clock of the dump (`tk_core.timekeeper.xtime_sec`); "no expiry" is `TIME64_MAX`
+  on kernels with "keys: Use TIME64_MAX" (6.6, and the 6.1.y stable tree) and 0 before it. Unmapped ids print as
+  `overflowuid`/`overflowgid`, read from memory, like `from_kuid_munged()`.
+- Keyrings store their links in an `assoc_array`, a 16-way trie with tagged pointers (leaf, node, shortcut; bit 1 of
+  a leaf marks a keyring). `keyring_lib.iterate_leaves` walks it in the kernel's order (`assoc_array_subtree_iterate`:
+  the leaves of a node, then its subtrees), with loop and depth guards; that is the order `KEYCTL_READ` returns.
+- Per-task view: `task_struct.cred` -> `thread_keyring`, `process_keyring`, `session_keyring`, `request_key_auth`;
+  the user and user-session keyrings (`_uid.<uid>`, `_uid_ses.<uid>`) are looked up in
+  `cred.user_ns.user_keyring_register`, where the kernel keeps them since 5.3.
+- Payloads (`--dump`): `user`/`logon` from `user_key_payload.data`; `asymmetric` the public key
+  (`public_key.key`); `.request_key_auth` shows the target key, the requesting pid and the callout length.
 
 ## Validation
 
-`sample/` builds a Debian cloud kernel (6.1, with the debug vmlinux for the ISF) and an Alpine guest that creates a
-known population of keys with `keyutils` (user, logon, big_key, keyrings nested two levels, a revoked key, an expired
-key, a key linked from two keyrings, a key unlinked from every keyring but still alive) across thread, process,
-session and user keyrings of several processes, prints `cat /proc/keys` and `keyctl show` for each process on the
-serial console, then dumps memory. Tests compare the plugin output with that truth line by line.
+`sample/` boots Debian 12's `6.1.0-54-cloud-amd64` in QEMU with an Alpine guest that builds a known key population
+(see `sample/README.md`): user and logon keys, keyrings nested two levels, thread/process/session/user keyrings of
+four processes and a second thread, a key linked from two keyrings, a revoked, an expired and a 3-day key, a keyring
+with 40 keys and one with 20 keyrings (so the walk meets nodes and a shortcut), a keyring unlinked from every keyring
+and alive only through a task's credentials, a negative key and a key under construction with its request_key
+authorisation key, and a process with no keyrings. Every key owner prints `/proc/keys` as it sees it, the members of
+its keyrings and the payloads it can read; then memory is dumped.
+
+- `tests/test_memory.py` (needs the dump): every `/proc/keys` line any reader printed (177 lines, 102 keys) is rebuilt
+  from the `Keys` columns and compared as text; the set of keys is exactly the union of the views; `LinkedFrom` is the
+  reverse of every `KEYCTL_READ`/`keyctl rlist`; the `logon` payload dumped from memory equals the bytes the guest
+  wrote, while `KEYCTL_READ` in the guest got "Not supported"; user payloads equal `KEYCTL_READ`; `ProcKeys` gives
+  the same 5 keyring IDs as `KEYCTL_GET_KEYRING_ID` for every task and thread, the helper's authorisation key, and
+  the children of every keyring in `KEYCTL_READ` order.
+- `tests/test_lib.py`: the walk on hand-built tries (empty, one leaf, more than 16 leaves in nested nodes, shortcuts,
+  loops, depth limit) and the line format on every guest line. `tests/run_mutmut.sh`: mutmut 3 on `keyring_lib.py`,
+  202 of 202 mutants killed.
+- `tests/sabotage.py`: 15 deliberate defects in the plugins (wrong tree walk, shortcut not followed, reversed
+  members, unmunged gid, wrong payload offset, thread keyring from the process keyring...), each must turn a memory
+  test red.
+
+Tested on: Debian 12 `6.1.0-54-cloud-amd64` (6.1.190). Neither Debian cloud kernel (6.1, 6.12) is built with
+`CONFIG_BIG_KEYS`, so `big_key` payloads are not decoded (their line keeps the description and the function name).
 
 ## Status
 
-Scaffold, 2026-11-08. The plugins, sample and tests are being built; see the commits. Submitted to the 2026
-Volatility Plugin Contest as an entry separate from `vol3-io-uring` and `vol3-cbpf` by the same author.
+2026-11-08: `Keys` and `ProcKeys` validated on the 6.1 sample. Next: the 6.12 kernel, docs and the release assets.
+Submitted to the 2026 Volatility Plugin Contest as an entry separate from `vol3-io-uring` and `vol3-cbpf` by the
+same author.
 
 ## License
 

@@ -1,0 +1,39 @@
+#!/bin/sh
+# PID 1 of the sample guest: build a known key population, print the truth, then idle.
+mount -t proc proc /proc
+mount -t sysfs sys /sys
+mount -t devtmpfs dev /dev 2>/dev/null
+exec > /dev/console 2>&1
+echo "GUEST_BOOTED $(uname -r)"
+keyctl --version
+# Revoked and expired keys are reaped gc_delay seconds later (default 300); keep them until the dump.
+echo 86400 > /proc/sys/kernel/keys/gc_delay
+echo "TRUTH gc_delay $(cat /proc/sys/kernel/keys/gc_delay)"
+
+# A process with no keyrings, started before anything touches PID 1's credentials.
+/usr/local/bin/kr-empty empty & sleep 1
+/usr/local/bin/kr-alice alice & sleep 2
+/usr/local/bin/kr-bob bob & sleep 4
+/usr/local/bin/kr-orphan orphan & sleep 1
+/usr/local/bin/kr-carol carol & sleep 5
+
+ps -o pid,ppid,user,comm,args
+# Every owner prints /proc/keys as it sees it, one at a time; then root's view and what root can list.
+for d in /proc/[0-9]*; do
+  case "$(cat $d/comm 2>/dev/null)" in kr-*|request-key) echo ${d#/proc/};; esac
+done | sort -n | while read p; do
+  echo "TRUTH signal pid=$p comm=$(cat /proc/$p/comm)"
+  kill -USR1 "$p"; sleep 1
+done
+sed 's/^/TRUTH view root /' /proc/keys
+echo "TRUTH viewend root pid=$$"
+for s in $(awk '$8 == "keyring" {print $1}' /proc/keys); do
+  echo "TRUTH rlist root serial=$s members=$(keyctl rlist 0x$s 2>&1 | tr '\n' ' ')"
+done
+for n in .builtin_trusted_keys .secondary_trusted_keys .blacklist; do
+  s=$(awk -v n="$n" '$8 == "keyring" && $9 == n":" {print $1}' /proc/keys | head -1)
+  echo "TRUTH trusted $n serial=$s"
+  [ -n "$s" ] && keyctl show 0x$s 2>&1 | sed "s/^/TRUTH show $n /"
+done
+echo "GUEST_READY_FOR_DUMP"
+while true; do sleep 3600; done
