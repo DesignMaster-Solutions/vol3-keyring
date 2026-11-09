@@ -13,8 +13,7 @@ get() { # <release> <asset>...
   mkdir -p "$tmp/$rel"
   (
     cd "$tmp/$rel"
-    curl -fsSLO "$gh/$rel/SHA256SUMS"
-    for f in "$@"; do curl -fsSLO "$gh/$rel/$f"; done
+    for f in SHA256SUMS "$@"; do curl -fsSLO --retry 8 --retry-delay 15 --retry-all-errors "$gh/$rel/$f"; done
     sum -c SHA256SUMS
   )
 }
