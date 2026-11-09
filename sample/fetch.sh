@@ -4,7 +4,10 @@
 # kernel version back here. v1.0.0 has 6.1 and 6.12; v1.1.0 adds 5.10 (the v1.0.0 assets are left as they were).
 set -eu
 cd "$(dirname "$0")"
-gh=https://github.com/DesignMaster-Solutions/vol3-keyring/releases/download
+# Assets come through the releases API (the plain /releases/download/ links answered 504 for hours on 2026-11-09);
+# GH_TOKEN, when set (CI), lifts the anonymous API rate limit.
+api=https://api.github.com/repos/DesignMaster-Solutions/vol3-keyring
+
 sum() { if command -v sha256sum >/dev/null; then sha256sum "$@"; else shasum -a 256 "$@"; fi; }
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
@@ -13,7 +16,13 @@ get() { # <release> <asset>...
   mkdir -p "$tmp/$rel"
   (
     cd "$tmp/$rel"
-    for f in SHA256SUMS "$@"; do curl -fsSLO --retry 8 --retry-delay 15 --retry-all-errors "$gh/$rel/$f"; done
+    dl() { curl -fsSL --retry 8 --retry-delay 15 --retry-all-errors ${GH_TOKEN:+-H "Authorization: Bearer $GH_TOKEN"} "$@"; }
+    dl "$api/releases/tags/$rel" > release.json
+    for f in SHA256SUMS "$@"; do
+      url=$(python3 -c 'import json, sys
+print(next(a["url"] for a in json.load(open("release.json"))["assets"] if a["name"] == sys.argv[1]))' "$f")
+      dl -H "Accept: application/octet-stream" -o "$f" "$url"
+    done
     sum -c SHA256SUMS
   )
 }

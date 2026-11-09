@@ -10,6 +10,8 @@ jobs:
           python-version: "3.12"
       - run: python -m venv .venv && .venv/bin/pip install -q volatility3==2.28.2 pytest
       - run: sample/fetch.sh
+        env:
+          GH_TOKEN: ${{ github.token }}
       # without the sample the memory tests skip; here a skip is a failure
       - run: |
           set -o pipefail
