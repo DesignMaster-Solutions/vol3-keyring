@@ -1,7 +1,7 @@
 # Memory samples
 
-Two dumps of the same benign guest: Debian 12 `6.1.0-54-cloud-amd64` (6.1.190-1) and Debian 13
-`6.12.115+deb13.1-cloud-amd64`. The dumps are release assets; their uncompressed sha256 are in
+Three dumps of the same benign guest: Debian 12 `6.1.0-54-cloud-amd64` (6.1.190-1), Debian 13
+`6.12.115+deb13.1-cloud-amd64` and Debian 11 `5.10.0-32-cloud-amd64` (5.10.223-1, release v1.1.0). The dumps are release assets; their uncompressed sha256 are in
 `expected/keyring-<kernel>.elf.sha256` and the ground truth the tests compare against is
 `expected/serial-<kernel>.log` (the `TRUTH` lines).
 
@@ -33,6 +33,13 @@ kernel is built with `X86_5LEVEL=y` and Volatility needs 4-level paging in the d
 ```
 ./build_sample.sh        # 6.1, writes work/: keyring-<KVER>.elf, serial-<KVER>.log, isf/linux/<KVER>.json.xz
 WORK=$PWD/work-6.12 SUITE=trixie KVER=6.12.115+deb13.1-cloud-amd64 ./build_sample.sh
+WORK=$PWD/work-5.10 SUITE=bullseye TOOLS_SUITE=bookworm KVER=5.10.0-32-cloud-amd64 ./build_sample.sh
 ```
+
+For 5.10 the QEMU image is bookworm (`TOOLS_SUITE`: bullseye-security no longer has the arm64 packages QEMU needs)
+and only the kernel comes from bullseye; the real `System.map` is the one in the `-dbg` package (bullseye puts a
+one-line stub in `/boot`). dwarf2json needs about 2.7 GB for this vmlinux; if Docker kills it, run the same
+dwarf2json revision on the host (`dwarf2json linux --elf vmlinux-<KVER> --system-map System.map-<KVER>`), which is
+how the v1.1.0 ISF was made.
 
 Key serials, process IDs and the dump hash change on every rebuild; the tests read them from the serial log.

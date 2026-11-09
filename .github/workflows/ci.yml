@@ -15,4 +15,5 @@ jobs:
           set -o pipefail
           .venv/bin/pytest tests -rs | tee out.txt
           KVER=6.12.115+deb13.1-cloud-amd64 KEYRING_WORK=$PWD/sample/work-6.12 .venv/bin/pytest tests -rs | tee -a out.txt
+          KVER=5.10.0-32-cloud-amd64 KEYRING_WORK=$PWD/sample/work-5.10 .venv/bin/pytest tests -rs | tee -a out.txt
           ! grep -q skipped out.txt

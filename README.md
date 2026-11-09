@@ -39,14 +39,15 @@ vol -r json -p vol3-keyring/plugins -s <isf dir> -f memory.elf linux.keyring.Key
 `ProcKeys --all` also lists kernel threads and tasks without any keyring. Real output on both samples is in
 [docs/usage.md](docs/usage.md); the design and the validation are in [docs/writeup.md](docs/writeup.md).
 
-## Samples (release v1.0.0)
+## Samples (releases v1.0.0 and v1.1.0)
 
 | Kernel | Dump (zstd) | Uncompressed sha256 | Ground truth |
 |---|---|---|---|
 | Debian 12 `6.1.0-54-cloud-amd64` (6.1.190) | `keyring-6.1.0-54-cloud-amd64.elf.zst` | `sample/expected/keyring-6.1.0-54-cloud-amd64.elf.sha256` | `sample/expected/serial-6.1.0-54-cloud-amd64.log` |
 | Debian 13 `6.12.115+deb13.1-cloud-amd64` | `keyring-6.12.115.deb13.1-cloud-amd64.elf.zst` | `sample/expected/keyring-6.12.115+deb13.1-cloud-amd64.elf.sha256` | `sample/expected/serial-6.12.115+deb13.1-cloud-amd64.log` |
+| Debian 11 `5.10.0-32-cloud-amd64` (5.10.223), v1.1.0 | `keyring-5.10.0-32-cloud-amd64.elf.zst` | `sample/expected/keyring-5.10.0-32-cloud-amd64.elf.sha256` | `sample/expected/serial-5.10.0-32-cloud-amd64.log` |
 
-The release also has the two ISFs (`*.json.xz`) and `SHA256SUMS` of every asset. Put the ISF under `<dir>/linux/`
+Each release also has the ISFs (`*.json.xz`) and `SHA256SUMS` of its assets. Put the ISF under `<dir>/linux/`
 and pass `-s <dir>` (`sample/fetch.sh` downloads, verifies and lays out all of it). `sample/README.md` says what the guest builds and how to rebuild it (Docker + QEMU).
 
 ## How it works
@@ -58,9 +59,10 @@ and pass `-s <dir>` (`sample/fetch.sh` downloads, verifies and lays out all of i
   built on `user_describe` (logon, encrypted, dns_resolver...) works without a special case. A `describe()` the
   plugin does not know prints the description and the function name.
 - Timeouts use the wall clock of the dump (`tk_core.timekeeper.xtime_sec`); "no expiry" is `TIME64_MAX` on kernels
-  with "keys: Use TIME64_MAX" (6.6 and the 6.1.y stable tree) and 0 before. Unmapped ids print as `overflowuid` and
+  with "keys: Use TIME64_MAX" (6.6, and the 6.1.y and 5.10.y stable trees: the 5.10.223 sample has it) and 0 before. Unmapped ids print as `overflowuid` and
   `overflowgid`, read from memory, as `from_kuid_munged()` does. The `request_key_auth` pid is a `pid_t` or, on
-  newer stable kernels, a `struct pid *`; both are handled.
+  newer stable kernels (6.1.190, 6.12), a `struct pid *`; the type comes from the ISF, and both are handled (5.10.223
+  still has the `pid_t`).
 - Keyrings keep their links in an `assoc_array`: a 16-way trie with tagged pointers (leaf, node, shortcut; bit 1 of a
   leaf marks a keyring). `keyring_lib.iterate_leaves` walks it in the kernel's order (`assoc_array_subtree_iterate`:
   the leaves of a node first, then its subtrees), with loop and depth guards.
@@ -83,7 +85,7 @@ credentials, a negative key, a key under construction with its authorisation key
 Every key owner prints `/proc/keys` as it sees it, the members of its keyrings and the payloads it can read; then the
 memory is dumped.
 
-- `tests/test_memory.py`, on both samples: every `/proc/keys` line any reader printed (177 lines, 102 keys on 6.1)
+- `tests/test_memory.py`, on the three samples: every `/proc/keys` line any reader printed (177 lines, 102 keys on 6.1)
   is rebuilt from the `Keys` columns and compared as text; the set of keys equals the union of all views;
   `LinkedFrom` is the reverse of every `KEYCTL_READ` and `keyctl rlist`; the `logon` payload dumped from memory is
   the 32 bytes the guest wrote, while `KEYCTL_READ` in the guest got "Not supported"; user payloads equal
@@ -94,29 +96,34 @@ memory is dumped.
   202 of 202 mutants killed.
 - `tests/sabotage.py`: 15 deliberate defects in the plugins (right subtrees of the serial tree skipped, shortcut not
   followed, members reversed, gid not munged, wrong payload offset, thread keyring read from the process keyring...);
-  every one turns a memory test red.
+  every one turns a memory test red. On 5.10 one of them ("request_key_auth pid as a raw pointer") only touches the
+  `struct pid *` branch that kernel does not have; `sabotage.py` reports it as `SAME` after checking that `Keys` and
+  `ProcKeys --all` print exactly the same JSON with and without it, and counts it apart instead of as caught.
 
 To repeat it from the release on a clean machine (needs `curl`, `zstd`, Python 3; CI does exactly this on every push,
 [![ci](https://github.com/DesignMaster-Solutions/vol3-keyring/actions/workflows/ci.yml/badge.svg)](https://github.com/DesignMaster-Solutions/vol3-keyring/actions/workflows/ci.yml)):
 
 ```
 python3 -m venv .venv && .venv/bin/pip install volatility3==2.28.2 pytest
-sample/fetch.sh   # both dumps and ISFs from the release into sample/work and sample/work-6.12, every sha256 checked
+sample/fetch.sh   # the three dumps and ISFs into sample/work, work-6.12 and work-5.10, every sha256 checked
 .venv/bin/pytest tests                                                                        # 6.1
 KVER=6.12.115+deb13.1-cloud-amd64 KEYRING_WORK=$PWD/sample/work-6.12 .venv/bin/pytest tests   # 6.12
+KVER=5.10.0-32-cloud-amd64 KEYRING_WORK=$PWD/sample/work-5.10 .venv/bin/pytest tests           # 5.10
 ```
 
 | Kernel | `pytest tests` | `tests/sabotage.py` |
 |---|---|---|
 | 6.1.0-54-cloud-amd64 (6.1.190) | 44 passed | 15/15 caught |
 | 6.12.115+deb13.1-cloud-amd64 | 44 passed | 15/15 caught |
+| 5.10.0-32-cloud-amd64 (5.10.223) | 44 passed | 14/14 caught, 1 equivalent (`pid_t` kernel) |
 
 ## Limits
 
-- Neither Debian cloud kernel is built with `CONFIG_BIG_KEYS`, so `big_key` payloads are not decoded (the line keeps
+- None of the three Debian cloud kernels is built with `CONFIG_BIG_KEYS`, so `big_key` payloads are not decoded (the line keeps
   the description and names the `describe()` function); persistent keyrings (`keyctl get_persistent`) appear in
   `Keys` but not as a `ProcKeys` role.
-- Only x86-64 was tested. Uids are printed as the kernel stores them (initial user namespace).
+- Kernels tested: 5.10.223, 6.1.190, 6.12.115 (Debian cloud builds).
+  Only x86-64 was tested. Uids are printed as the kernel stores them (initial user namespace).
 - The plugins show what is in memory; they do not decrypt anything. The asymmetric dump is the public key as the
   kernel parsed it, not the original certificate.
 

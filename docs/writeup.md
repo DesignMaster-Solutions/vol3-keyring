@@ -83,7 +83,9 @@ request-key helper) prints its own view on a signal, and the union is the expect
   and turned a pending key negative; and merely asking for `@s` installs the user-session keyring as the session
   keyring of a task that had none (the plugin showed it, the truth line had hidden it).
 - Tests were seen red before green: mutmut 3 kills all 202 mutants of `keyring_lib.py`, and `tests/sabotage.py`
-  plants 15 defects in the plugins; each makes a memory test fail on both kernels.
+  plants 15 defects in the plugins; each makes a memory test fail on 6.1 and 6.12. On the 5.10.223 sample (Debian
+  11) the suite passes unchanged and 14 fail; the 15th only changes the `struct pid *` branch that 5.10 does not
+  have, and the script proves it equivalent there (same plugin output) rather than counting it.
 
 ## Limits
 

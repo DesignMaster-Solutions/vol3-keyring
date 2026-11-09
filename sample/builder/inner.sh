@@ -7,14 +7,21 @@ MEM="${MEM:-512}"
 OUT="keyring-$KVER.elf"
 
 if [ ! -f "vmlinux-$KVER" ]; then
+  . /etc/os-release
+  if [ -n "${SUITE:-}" ] && [ "$SUITE" != "$VERSION_CODENAME" ]; then  # kernel from another suite than the tools
+    echo "deb [arch=amd64] http://deb.debian.org/debian $SUITE main" > /etc/apt/sources.list.d/kernel.list
+  fi
   apt-get update -qq
   mkdir -p debs && cd debs
   apt-get download "linux-image-$KVER:amd64" "linux-image-$KVER-dbg:amd64"
   cd ..
   rm -rf kpkg && mkdir kpkg
-  for d in debs/*.deb; do dpkg-deb -x "$d" kpkg; done
+  for d in debs/*.deb; do  # dpkg-deb -x reports a false EOF on the 5.10 -dbg data.tar.xz; plain tar reads it
+    dpkg-deb -x "$d" kpkg || ar p "$d" data.tar.xz | tar -xJ -C kpkg
+  done
   cp "kpkg/boot/vmlinuz-$KVER" .
-  cp "kpkg/boot/System.map-$KVER" .
+  # bullseye ships a one-line stub in /boot and the real System.map in the -dbg package
+  cp "$(ls "kpkg/usr/lib/debug/boot/System.map-$KVER" 2>/dev/null || echo "kpkg/boot/System.map-$KVER")" .
   cp "kpkg/usr/lib/debug/boot/vmlinux-$KVER" .
   dpkg-deb -f debs/linux-image-$KVER-dbg_*.deb Version > kernel.version
   rm -rf kpkg
