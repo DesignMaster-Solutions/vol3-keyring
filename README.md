@@ -47,7 +47,7 @@ vol -r json -p vol3-keyring/plugins -s <isf dir> -f memory.elf linux.keyring.Key
 | Debian 13 `6.12.115+deb13.1-cloud-amd64` | `keyring-6.12.115.deb13.1-cloud-amd64.elf.zst` | `sample/expected/keyring-6.12.115+deb13.1-cloud-amd64.elf.sha256` | `sample/expected/serial-6.12.115+deb13.1-cloud-amd64.log` |
 
 The release also has the two ISFs (`*.json.xz`) and `SHA256SUMS` of every asset. Put the ISF under `<dir>/linux/`
-and pass `-s <dir>`. `sample/README.md` says what the guest builds and how to rebuild it (Docker + QEMU).
+and pass `-s <dir>` (`sample/fetch.sh` downloads, verifies and lays out all of it). `sample/README.md` says what the guest builds and how to rebuild it (Docker + QEMU).
 
 ## How it works
 
@@ -96,7 +96,12 @@ memory is dumped.
   followed, members reversed, gid not munged, wrong payload offset, thread keyring read from the process keyring...);
   every one turns a memory test red.
 
+To repeat it from the release on a clean machine (needs `curl`, `zstd`, Python 3; CI does exactly this on every push,
+[![ci](https://github.com/DesignMaster-Solutions/vol3-keyring/actions/workflows/ci.yml/badge.svg)](https://github.com/DesignMaster-Solutions/vol3-keyring/actions/workflows/ci.yml)):
+
 ```
+python3 -m venv .venv && .venv/bin/pip install volatility3==2.28.2 pytest
+sample/fetch.sh   # both dumps and ISFs from the release into sample/work and sample/work-6.12, every sha256 checked
 .venv/bin/pytest tests                                                                        # 6.1
 KVER=6.12.115+deb13.1-cloud-amd64 KEYRING_WORK=$PWD/sample/work-6.12 .venv/bin/pytest tests   # 6.12
 ```
