@@ -61,6 +61,8 @@ of data) was formatted by cryptsetup 2.6 with the same 32 bytes the guest loads 
 text was written through dm-crypt (`sample/luks/build.sh`, `luksDump.txt`). The test dumps every payload from each
 of the three samples and checks that only the logon key matches and that sector 0 decrypts to that text. The guest
 does not mount the volume: the image shows that the dumped file is what cryptsetup takes, not a live dm-crypt mapping.
+`sample/luks/nvme-vol.img` is the layout cryptsetup gives a 4Kn disk by default (512-bit key, 4096-byte sectors,
+`build_4k.sh`); no guest loads its key, it is there so the tool is tested on that layout too.
 
 ## Samples (releases v1.0.0 and v1.1.0)
 
@@ -148,8 +150,8 @@ KVER=5.10.0-32-cloud-amd64 KEYRING_WORK=$PWD/sample/work-5.10 .venv/bin/pytest t
 - Kernels tested: 5.10.223, 6.1.190, 6.12.115 (Debian cloud builds).
   Only x86-64 was tested. Uids are printed as the kernel stores them (initial user namespace).
 - The plugins show what is in memory; they do not decrypt anything (`tools/luks_vk.py` does, for a LUKS2 image
-  whose volume key was dumped: PBKDF2 digests only, and `--sector` only for `aes-xts-plain64` with 512-byte
-  sectors). The sample volume is not mounted in the guest. The asymmetric dump is the public key as the
+  whose volume key was dumped: PBKDF2 digests only, and `--sector` only for `aes-xts-plain64`, with a 256- or 512-bit
+  key and 512- or 4096-byte sectors). The sample volume is not mounted in the guest. The asymmetric dump is the public key as the
   kernel parsed it, not the original certificate.
 
 ## Troubleshooting

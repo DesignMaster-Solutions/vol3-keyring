@@ -3,11 +3,11 @@
 
     vol ... linux.keyring.Keys --filter '^logon ' --dump
     python3 tools/luks_vk.py disk.img key-*.bin               # names the key that matches the header digest
-    python3 tools/luks_vk.py disk.img key-*.bin --sector 0    # and decrypts that 512-byte sector to stdout
+    python3 tools/luks_vk.py disk.img key-*.bin --sector 0    # and decrypts that sector to stdout
 
 The match is the header's own check (PBKDF2 of the candidate against the digest in the LUKS2 JSON area), the one
 `cryptsetup open --volume-key-file` does, so it needs no passphrase, no root and no cryptsetup. --sector uses the
-`openssl` command (AES-ECB, with XTS on top) and only handles aes-xts-plain64 with 512-byte sectors; for the whole volume use cryptsetup.
+`openssl` command (AES-ECB, with XTS on top) and handles aes-xts-plain64 (256- or 512-bit key, 512- or 4096-byte sectors); for the whole volume use cryptsetup.
 Exit status: 0 a key matched, 1 none did.
 """
 import argparse
@@ -45,14 +45,17 @@ def matching_digest(hdr: dict, key: bytes):
 
 def decrypt_sector(image: str, hdr: dict, did: str, key: bytes, n: int) -> bytes:
     seg = hdr["segments"][hdr["digests"][did]["segments"][0]]
-    if seg["encryption"] != "aes-xts-plain64" or seg["sector_size"] != 512:
-        raise ValueError(f"--sector handles aes-xts-plain64 with 512-byte sectors, not {seg['encryption']}")
+    size = seg["sector_size"]  # sector n is counted in the segment's own sector size (512 or 4096)
+    if seg["encryption"] != "aes-xts-plain64":
+        raise ValueError(f"--sector handles aes-xts-plain64, not {seg['encryption']}")
     with open(image, "rb") as f:
-        f.seek(int(seg["offset"]) + n * 512)
-        data = f.read(512)
-    if len(data) != 512:
+        f.seek(int(seg["offset"]) + n * size)
+        data = f.read(size)
+    if len(data) != size:
         raise ValueError(f"sector {n} is past the end of the image")
-    return xts_decrypt(key, n + int(seg["iv_tweak"]), data)  # plain64: the tweak is the sector number
+    # plain64: the tweak is the 512-byte sector number where the data unit starts, also with 4096-byte sectors
+    # (LUKS2 does not set dm-crypt's iv_large_sectors)
+    return xts_decrypt(key, n * (size // 512) + int(seg["iv_tweak"]), data)
 
 
 def _ecb(key: bytes, data: bytes, decrypt: bool = False) -> bytes:

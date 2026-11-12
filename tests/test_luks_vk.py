@@ -45,3 +45,22 @@ def test_not_a_luks2_image(tmp_path):
     with pytest.raises(ValueError):
         luks_vk.header(str(p))
     assert luks_vk.main([IMG, str(p)]) == 1
+
+
+IMG4K = os.path.join(ROOT, "sample", "luks", "nvme-vol.img")  # cryptsetup's layout on a 4Kn disk (build_4k.sh)
+VK4K = b"LUKS-DEMO-512-BIT-VOLUME-KEY-first-half/second-half-0123456789ab"
+
+
+@pytest.mark.skipif(shutil.which("openssl") is None, reason="needs the openssl command")
+def test_512_bit_key_and_4096_byte_sectors():
+    hdr = luks_vk.header(IMG4K)
+    seg = hdr["segments"]["0"]
+    assert (seg["sector_size"], hdr["keyslots"]["0"]["key_size"]) == (4096, 64)
+    assert luks_vk.matching_digest(hdr, VK4K) == "0"
+    assert luks_vk.matching_digest(hdr, VK4K[:32]) is None
+    s0 = luks_vk.decrypt_sector(IMG4K, hdr, "0", VK4K, 0)
+    assert len(s0) == 4096 and s0.startswith(b"nvme-vol sector 0: ledger-2026.db lives here\n")
+    # sector 3 only decrypts with the tweak 3 * 8: plain64 counts 512-byte sectors
+    assert luks_vk.decrypt_sector(IMG4K, hdr, "0", VK4K, 3).startswith(b"nvme-vol sector 3: second marker\n")
+    with pytest.raises(ValueError, match="past the end"):
+        luks_vk.decrypt_sector(IMG4K, hdr, "0", VK4K, 16)
