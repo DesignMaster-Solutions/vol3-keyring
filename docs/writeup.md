@@ -78,6 +78,10 @@ request-key helper) prints its own view on a signal, and the union is the expect
   and of root's `keyctl rlist` of every keyring; the `ProcKeys` tree must list children in `KEYCTL_READ` order.
 - The `logon` key's 32 bytes come out of memory equal to what the guest wrote, in the same run where `KEYCTL_READ`
   inside the guest returned "Not supported".
+- Memory to disk: `tools/luks_vk.py` checks every dumped payload against the digest of a LUKS2 image that
+  cryptsetup formatted with that volume key (`sample/luks/`). Only the logon key matches (a key with one byte
+  changed, a truncated key, the passphrase and the key with a zero byte appended do not), and sectors 0 and 7
+  decrypt to the text written through dm-crypt. The guest does not mount the volume.
 - Writing the tests found three guest-side mistakes before any plugin bug: `join_session_keyring` only joins a
   named keyring the caller may search without possessing it; an unhandled `SIGUSR1` killed the request-key helper
   and turned a pending key negative; and merely asking for `@s` installs the user-session keyring as the session

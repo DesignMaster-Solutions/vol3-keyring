@@ -18,6 +18,7 @@ Both take `--filter <regex>` on `"<type> <description>"` (for example `^logon `,
 | What the plugins recover | Why it matters |
 |---|---|
 | Every key in the kernel, with owner, permissions and timeout, including keys the reader's `/proc/keys` hides | `/proc/keys` only lists keys the reader may view; root does not see other users' keys. Memory has all of them. |
+| The volume key of a LUKS2 disk image, matched to the image and used to decrypt it (`tools/luks_vk.py`) | Memory to disk: the dumped `logon` payload is the file `cryptsetup open --volume-key-file` takes, so the image opens without the passphrase. |
 | `logon` keys and their payload | The type exists so user space can never read the key back (`KEYCTL_READ` returns "Not supported"). dm-crypt volume keys (`cryptsetup:`, kept in a keyring with `--link-vk-to-keyring`) and fscrypt v1 keys (`fscrypt:`) use it. |
 | Kerberos credential caches of type `KEYRING:` | MIT krb5 stores tickets as keys in unswappable kernel memory; RHEL 7 made `KEYRING:persistent:%{uid}` the default. |
 | Keyrings linked from nowhere but alive through a task's credentials (`LinkedFrom -`, `HeldBy <pid>:session`) | Data parked in the keyring with no file and no link a keyring listing would find. |
@@ -38,6 +39,28 @@ vol -r json -p vol3-keyring/plugins -s <isf dir> -f memory.elf linux.keyring.Key
 
 `ProcKeys --all` also lists kernel threads and tasks without any keyring. Real output on both samples is in
 [docs/usage.md](docs/usage.md); the design and the validation are in [docs/writeup.md](docs/writeup.md).
+
+## From memory to the encrypted disk
+
+`tools/luks_vk.py` takes the payloads `Keys --dump` wrote and a LUKS2 image and says which key is the volume key
+of that image, with the header's own check (PBKDF2 of the candidate against the digest in the LUKS2 metadata, what
+`cryptsetup open --volume-key-file` verifies). No passphrase, no root, no cryptsetup; `--sector N` decrypts one
+sector on the spot (`aes-xts-plain64`, through the `openssl` command).
+
+```
+$ vol -p plugins -s isf -f keyring-6.1.0-54-cloud-amd64.elf linux.keyring.Keys --filter '^logon ' --dump
+2fb238ef  I--Q---  1  perm  3d010000  1000  1000  logon  cryptsetup:alice-vol: 32  33ff4b93  -  IN_QUOTA  key-2fb238ef-logon.bin (32 bytes)
+$ python3 tools/luks_vk.py sample/luks/alice-vol.img key-*.bin --sector 0
+key-2fb238ef-logon.bin: volume key of sample/luks/alice-vol.img (digest 0, 256 bits)
+  cryptsetup open --volume-key-file key-2fb238ef-logon.bin sample/luks/alice-vol.img <name>
+alice-vol sector 0: payroll-2026.csv lives here
+```
+
+In the guest, `KEYCTL_READ` on that key answers "Not supported". `sample/luks/alice-vol.img` (1 MiB header, 64 KiB
+of data) was formatted by cryptsetup 2.6 with the same 32 bytes the guest loads as `cryptsetup:alice-vol`, and the
+text was written through dm-crypt (`sample/luks/build.sh`, `luksDump.txt`). The test dumps every payload from each
+of the three samples and checks that only the logon key matches and that sector 0 decrypts to that text. The guest
+does not mount the volume: the image shows that the dumped file is what cryptsetup takes, not a live dm-crypt mapping.
 
 ## Samples (releases v1.0.0 and v1.1.0)
 
@@ -124,7 +147,9 @@ KVER=5.10.0-32-cloud-amd64 KEYRING_WORK=$PWD/sample/work-5.10 .venv/bin/pytest t
   `Keys` but not as a `ProcKeys` role.
 - Kernels tested: 5.10.223, 6.1.190, 6.12.115 (Debian cloud builds).
   Only x86-64 was tested. Uids are printed as the kernel stores them (initial user namespace).
-- The plugins show what is in memory; they do not decrypt anything. The asymmetric dump is the public key as the
+- The plugins show what is in memory; they do not decrypt anything (`tools/luks_vk.py` does, for a LUKS2 image
+  whose volume key was dumped: PBKDF2 digests only, and `--sector` only for `aes-xts-plain64` with 512-byte
+  sectors). The sample volume is not mounted in the guest. The asymmetric dump is the public key as the
   kernel parsed it, not the original certificate.
 
 ## Troubleshooting

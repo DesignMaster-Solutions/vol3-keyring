@@ -157,3 +157,18 @@ def test_task_without_keyrings():
     assert {r["Role"]: r["Serial"] for r in rows} == {
         "thread": "-", "process": "-", "session": "-", "request_key_auth": "-", "user": root["user"],
         "user_session": root["user_session"]}
+
+
+def test_dumped_logon_key_opens_the_luks2_volume(tmp_path):
+    """Memory to disk: of every payload Keys --dump writes, only the logon key is the volume key of
+    sample/luks/alice-vol.img (formatted by cryptsetup), and it decrypts what dm-crypt wrote there."""
+    rows = vol("linux.keyring.Keys", "--dump", cwd=tmp_path)
+    files = sorted(str(p) for p in tmp_path.glob("key-*.bin"))
+    assert len(files) >= 50 and len(rows) >= len(files)
+    tool = [sys.executable, os.path.join(ROOT, "tools", "luks_vk.py"), os.path.join(ROOT, "sample", "luks", "alice-vol.img")]
+    out = subprocess.run(tool + files + ["--sector", "0"], capture_output=True)
+    assert out.returncode == 0
+    assert re.findall(r"^(\S+): volume key", out.stderr.decode(), re.M) == [f for f in files if f.endswith("-logon.bin")]
+    assert out.stdout.startswith(b"alice-vol sector 0: payroll-2026.csv lives here\n")
+    others = [f for f in files if not f.endswith("-logon.bin")]
+    assert subprocess.run(tool + others, capture_output=True).returncode == 1
