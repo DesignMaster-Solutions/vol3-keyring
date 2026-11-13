@@ -37,7 +37,7 @@ vol -p vol3-keyring/plugins -s <isf dir> -f memory.elf linux.keyring.ProcKeys --
 vol -r json -p vol3-keyring/plugins -s <isf dir> -f memory.elf linux.keyring.Keys | python3 vol3-keyring/tools/proc_keys.py
 ```
 
-`ProcKeys --all` also lists kernel threads and tasks without any keyring. Real output on both samples is in
+`ProcKeys --all` also lists kernel threads and tasks without any keyring. Real output on the three kernels and on the live LUKS dump is in
 [docs/usage.md](docs/usage.md); the design and the validation are in [docs/writeup.md](docs/writeup.md).
 
 ## From memory to the encrypted disk

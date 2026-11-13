@@ -22,6 +22,6 @@ are preferred when entries are similar). Several submissions by the same author 
 |---|---|
 | Source code | https://github.com/DesignMaster-Solutions/vol3-keyring (`plugins/linux/keyring.py`, `keyring_lib.py`), tag v1.0.0 |
 | Memory samples | Release v1.0.0: `keyring-6.1.0-54-cloud-amd64.elf.zst`, `keyring-6.12.115.deb13.1-cloud-amd64.elf.zst`, the two ISFs `*.json.xz`, `SHA256SUMS`; rebuildable with `sample/build_sample.sh` |
-| How to use | README.md ("Install and run") and docs/usage.md (real output on both samples) |
+| How to use | README.md ("Install and run") and docs/usage.md (real output on the three kernels and the live LUKS dump) |
 | Write-up | docs/writeup.md |
 | ICLA | on file since 2026-11-05 |
