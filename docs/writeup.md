@@ -81,7 +81,7 @@ request-key helper) prints its own view on a signal, and the union is the expect
 - Memory to disk: `tools/luks_vk.py` checks every dumped payload against the digest of a LUKS2 image that
   cryptsetup formatted with that volume key (`sample/luks/`). Only the logon key matches (a key with one byte
   changed, a truncated key, the passphrase and the key with a zero byte appended do not), and sectors 0 and 7
-  decrypt to the text written through dm-crypt. The guest does not mount the volume.
+  decrypt to the text written through dm-crypt. That guest does not mount the volume; a fourth sample (v1.2.0, `sample/guest-luks`) has cryptsetup 2.7.2 format and open a volume inside the guest with `--link-vk-to-keyring`, and `tests/test_luks_live.py` recovers that key from memory and decrypts the disk the guest left.
 - Writing the tests found three guest-side mistakes before any plugin bug: `join_session_keyring` only joins a
   named keyring the caller may search without possessing it; an unhandled `SIGUSR1` killed the request-key helper
   and turned a pending key negative; and merely asking for `@s` installs the user-session keyring as the session

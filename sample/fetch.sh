@@ -38,3 +38,8 @@ put() { # <release> <kernel as named in the asset> <kernel version> <work dir>
 put v1.0.0 6.1.0-54-cloud-amd64 6.1.0-54-cloud-amd64 work
 put v1.0.0 6.12.115.deb13.1-cloud-amd64 6.12.115+deb13.1-cloud-amd64 work-6.12
 put v1.1.0 5.10.0-32-cloud-amd64 5.10.0-32-cloud-amd64 work-5.10
+# v1.2.0: the live LUKS guest (sample/guest-luks), same kernel and ISF as work/
+get v1.2.0 keyring-luks-live-6.1.0-54-cloud-amd64.elf.zst
+mkdir -p work-luks/isf/linux && cp work/isf/linux/6.1.0-54-cloud-amd64.json.xz work-luks/isf/linux/
+zstd -dqf "$tmp/v1.2.0/keyring-luks-live-6.1.0-54-cloud-amd64.elf.zst" -o work-luks/keyring-6.1.0-54-cloud-amd64.elf
+(cd work-luks && sum -c ../expected/keyring-luks-live.elf.sha256)

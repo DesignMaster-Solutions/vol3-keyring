@@ -59,10 +59,32 @@ alice-vol sector 0: payroll-2026.csv lives here
 In the guest, `KEYCTL_READ` on that key answers "Not supported". `sample/luks/alice-vol.img` (1 MiB header, 64 KiB
 of data) was formatted by cryptsetup 2.6 with the same 32 bytes the guest loads as `cryptsetup:alice-vol`, and the
 text was written through dm-crypt (`sample/luks/build.sh`, `luksDump.txt`). The test dumps every payload from each
-of the three samples and checks that only the logon key matches and that sector 0 decrypts to that text. The guest
-does not mount the volume: the image shows that the dumped file is what cryptsetup takes, not a live dm-crypt mapping.
+of the three samples and checks that only the logon key matches and that sector 0 decrypts to that text. That guest
+does not mount the volume: the image shows that the dumped file is what cryptsetup takes. The live dm-crypt mapping is the fourth sample, below.
 `sample/luks/nvme-vol.img` is the layout cryptsetup gives a 4Kn disk by default (512-bit key, 4096-byte sectors,
 `build_4k.sh`); no guest loads its key, it is there so the tool is tested on that layout too.
+
+### A volume opened inside the guest (release v1.2.0)
+
+The fourth sample is a machine with a LUKS2 volume open. `sample/guest-luks/init` runs cryptsetup 2.7.2 on the same
+Debian 6.1.190 kernel: `luksFormat` on `/dev/vda` (512-bit key drawn by cryptsetup in the guest), then
+`open --link-vk-to-keyring "@u::%logon:cryptsetup:live-vol"` and two sectors written through dm-crypt. The key never
+left the guest: the serial log has only its sha256. The disk the guest formatted is `sample/luks/live-vol.img`.
+
+```
+$ vol -p plugins -s isf -f keyring-6.1.0-54-cloud-amd64.elf linux.keyring.Keys --dump     # the luks-live dump
+0aa2e6f0  I--Q---  1  perm  3d010000  0  0  logon  cryptsetup:live-vol: 64  1529be5e  -  IN_QUOTA  key-0aa2e6f0-logon.bin (64 bytes)
+$ python3 tools/luks_vk.py sample/luks/live-vol.img key-*.bin --sector 0
+key-0aa2e6f0-logon.bin: volume key of sample/luks/live-vol.img (digest 0, 512 bits)
+live-vol sector 0: written through dm-crypt inside the guest
+```
+
+`tests/test_luks_live.py` checks the sha256 of the dumped payload against the one the guest printed, that only that
+file matches the header digest, and sectors 0 and 5. What this does and does not show: the key is in the keyring
+because cryptsetup was asked to keep it there (`--link-vk-to-keyring`, cryptsetup 2.7 or later). The key dm-crypt
+itself took by reference (`:64:logon:cryptsetup:<uuid>-d0` in the table) is not in `/proc/keys` and not in
+`key_serial_tree` at dump time, so a volume opened without that option is out of reach of these plugins.
+
 
 ## Samples (releases v1.0.0 and v1.1.0)
 
@@ -151,7 +173,7 @@ KVER=5.10.0-32-cloud-amd64 KEYRING_WORK=$PWD/sample/work-5.10 .venv/bin/pytest t
   Only x86-64 was tested. Uids are printed as the kernel stores them (initial user namespace).
 - The plugins show what is in memory; they do not decrypt anything (`tools/luks_vk.py` does, for a LUKS2 image
   whose volume key was dumped: PBKDF2 digests only, and `--sector` only for `aes-xts-plain64`, with a 256- or 512-bit
-  key and 512- or 4096-byte sectors). The sample volume is not mounted in the guest. The asymmetric dump is the public key as the
+  key and 512- or 4096-byte sectors). Only the luks-live sample has the volume open in the guest, and only because cryptsetup was told to keep the key in a keyring. The asymmetric dump is the public key as the
   kernel parsed it, not the original certificate.
 
 ## Troubleshooting

@@ -42,4 +42,12 @@ one-line stub in `/boot`). dwarf2json needs about 2.7 GB for this vmlinux; if Do
 dwarf2json revision on the host (`dwarf2json linux --elf vmlinux-<KVER> --system-map System.map-<KVER>`), which is
 how the v1.1.0 ISF was made.
 
+The live LUKS sample (v1.2.0) is a separate guest on the 6.1 kernel, `guest-luks/`: Alpine 3.20 with cryptsetup
+2.7.2, the kernel modules it needs (virtio-blk, dm-crypt, xts, aesni) taken from the Debian package, and a 1 MiB virtio
+disk that cryptsetup formats and opens. Its truth is `expected/serial-luks-live.log`, the disk is `luks/live-vol.img`.
+
+```
+WORK=$PWD/work-luks GUEST=guest-luks ./build_sample.sh   # then copy work-luks/live-vol.img to luks/ and serial.log to expected/
+```
+
 Key serials, process IDs and the dump hash change on every rebuild; the tests read them from the serial log.

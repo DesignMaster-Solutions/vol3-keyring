@@ -8,11 +8,13 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 WORK="${WORK:-$HERE/work}"
 mkdir -p "$WORK"
 
-docker build -q --platform linux/amd64 -t vol3-keyring-guest "$HERE/guest"
-CID=$(docker create --platform linux/amd64 vol3-keyring-guest /init)
+GUEST="${GUEST:-guest}"  # guest-luks: the live LUKS sample (cryptsetup opens a volume inside the guest)
+[ "$GUEST" = guest-luks ] && export LUKS=1
+docker build -q --platform linux/amd64 -t "vol3-keyring-$GUEST" "$HERE/$GUEST"
+CID=$(docker create --platform linux/amd64 "vol3-keyring-$GUEST" /init)
 docker export "$CID" > "$WORK/rootfs.tar"
 docker rm "$CID" >/dev/null
 
 TOOLS="${TOOLS_SUITE:-${SUITE:-bookworm}}"
 docker build -q --build-arg SUITE="$TOOLS" -t "vol3-keyring-builder-$TOOLS" "$HERE/builder"
-docker run --rm -v "$WORK:/work" -e KVER -e MEM -e SUITE "vol3-keyring-builder-$TOOLS"
+docker run --rm -v "$WORK:/work" -e KVER -e MEM -e SUITE -e LUKS "vol3-keyring-builder-$TOOLS"
