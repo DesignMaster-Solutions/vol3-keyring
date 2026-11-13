@@ -563,3 +563,35 @@ $ grep -Fxf root-view.txt memory.txt | wc -l; wc -l < root-view.txt
 20
 20
 ```
+
+## Live LUKS volume (the luks-live dump, kernel 6.1.0-54-cloud-amd64)
+
+cryptsetup 2.7 formatted and opened `/dev/vda` inside the guest with `--link-vk-to-keyring`. The volume key
+was drawn in the guest and never printed; the serial log only has its sha256.
+
+### What the guest saw
+
+```
+$ grep -E '^TRUTH (table|vk) |cryptsetup:live-vol' sample/expected/serial-luks-live.log
+TRUTH table 0 128 crypt aes-xts-plain64 :64:logon:cryptsetup:1eafdcd7-1b52-4995-8811-db72e8e682e9-d0 0 254:0 2048
+TRUTH vk sha256=dc631e7f782805b8bf291806f75b10b4919a5eea3d8006b1cbf8618d97b53a5d bytes=64
+TRUTH view root 0aa2e6f0 I--Q---     1 perm 3d010000     0     0 logon     cryptsetup:live-vol: 64
+```
+
+### The key from memory decrypts the disk the guest left behind
+
+```
+$ vol -p plugins -s isf -f keyring-6.1.0-54-cloud-amd64.elf linux.keyring.Keys --filter cryptsetup --dump
+Serial    Flags    Usage  Timeout  Perm      UID  GID  Type   Description              LinkedFrom  HeldBy  KernelFlags  Dumped
+0aa2e6f0  I--Q---  1      perm     3d010000  0    0    logon  cryptsetup:live-vol: 64  1529be5e    -       IN_QUOTA     key-0aa2e6f0-logon.bin (64 bytes)
+$ sha256sum key-*-logon.bin   # same digest as the TRUTH vk line above
+dc631e7f782805b8bf291806f75b10b4919a5eea3d8006b1cbf8618d97b53a5d  key-0aa2e6f0-logon.bin
+$ python3 tools/luks_vk.py sample/luks/live-vol.img key-*-logon.bin --sector 0 | head -1
+key-0aa2e6f0-logon.bin: volume key of sample/luks/live-vol.img (digest 0, 512 bits)
+  cryptsetup open --volume-key-file key-0aa2e6f0-logon.bin sample/luks/live-vol.img <name>
+live-vol sector 0: written through dm-crypt inside the guest
+$ python3 tools/luks_vk.py sample/luks/live-vol.img key-*-logon.bin --sector 5 | head -1
+key-0aa2e6f0-logon.bin: volume key of sample/luks/live-vol.img (digest 0, 512 bits)
+  cryptsetup open --volume-key-file key-0aa2e6f0-logon.bin sample/luks/live-vol.img <name>
+live-vol sector 5: second marker
+```

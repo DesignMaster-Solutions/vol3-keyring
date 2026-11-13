@@ -42,5 +42,33 @@ run() {  # dir elf args...
     echo "$(echo "$view" | wc -l | tr -d ' ')"
     echo '```'
   done
+  # the luks-live dump: cryptsetup opened the volume inside the guest (sample/guest-luks)
+  d="$ROOT/sample/work-luks"
+  if [ -d "$d/isf" ]; then
+    elf=$(cd "$d" && ls keyring-*.elf); log="$ROOT/sample/expected/serial-luks-live.log"
+    echo; echo "## Live LUKS volume (the luks-live dump, kernel $(basename "${elf#keyring-}" .elf))"
+    echo
+    echo "cryptsetup 2.7 formatted and opened \`/dev/vda\` inside the guest with \`--link-vk-to-keyring\`. The volume key"
+    echo "was drawn in the guest and never printed; the serial log only has its sha256."
+    echo; echo "### What the guest saw"
+    echo; echo '```'
+    echo "\$ grep -E '^TRUTH (table|vk) |cryptsetup:live-vol' sample/expected/serial-luks-live.log"
+    grep -E '^TRUTH (table|vk) |cryptsetup:live-vol' "$log" | tr -d '\r'
+    echo '```'
+    echo; echo "### The key from memory decrypts the disk the guest left behind"
+    tmp=$(mktemp -d)
+    echo; echo '```'
+    echo "\$ vol -p plugins -s isf -f $elf linux.keyring.Keys --filter cryptsetup --dump"
+    (cd "$tmp" && "$VOL" -q -p "$ROOT/plugins" -s "$d/isf" -f "$d/$elf" linux.keyring.Keys --filter cryptsetup --dump 2>/dev/null) | sed '/^Volatility 3 Framework/d;/^$/d' | column -t -s $'\t'
+    echo "\$ sha256sum key-*-logon.bin   # same digest as the TRUTH vk line above"
+    (cd "$tmp" && shasum -a 256 key-*-logon.bin)
+    for s in 0 5; do
+      echo "\$ python3 tools/luks_vk.py sample/luks/live-vol.img key-*-logon.bin --sector $s | head -1"
+      # sed reads to the end: head would close the pipe and pipefail would kill the script
+      (cd "$tmp" && python3 "$ROOT/tools/luks_vk.py" "$ROOT/sample/luks/live-vol.img" key-*-logon.bin --sector "$s" 2>&1 | LC_ALL=C tr -d '\0' | LC_ALL=C sed -n "s|$ROOT/||;1,3p")
+    done
+    echo '```'
+    rm -rf "$tmp"
+  fi
 } > "$ROOT/docs/usage.md"
 echo "wrote docs/usage.md"
